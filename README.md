@@ -1,100 +1,108 @@
-# Instructions on creating the repo
-This file is divided up into two parts, the first is instructions on creating the repo and cloning the template, the second part is the template for the `README.md` file that will serve as the home page and installation instructions for the integration. 
-
-Some examples to emulate:
-* [Logz.io](https://github.com/xmatters/xm-labs-logz.io-elk)
-* [StatusPage](https://github.com/xmatters/xm-labs-statuspage)
-
-## 1. Create the repo
-[Create the repo](https://help.github.com/articles/create-a-repo/) using your own GitHub account. Please prefix the name of the repo with `xm-labs-` and all in lower case. When you create the repo don't add a README or LICENSE; this will make sure to initialize an empty repo. 
-
-## 2. Clone the template
-*Note*: These instructions use git in the terminal. The GitHub desktop client is rather limited and likely won't save you any headaches. 
-
-Open a command line and do the following. Where `MY_NEW_REPO_NAME_HERE` is the name of your GitHub repo and `MY_NEW_REPO_URL` is the url generated when you create the new repo. 
-
-```bash
-# Clone the template repo to the local file system. 
-git clone https://github.com/xmatters/xm-labs-template.git
-# Change the directory name to avoid confusion, then cd into it
-mv xm-labs-template MY_NEW_REPO_NAME_HERE
-cd MY_NEW_REPO_NAME_HERE
-# Remove the template git history
-rm -Rf .git/
-# Initialize the new git repo
-git init
-# Point this repo to the one on GitHub
-git remote add origin https://github.com/MY_NEW_REPO_URL.git
-# Add all files in the current directory and commit to staging
-git add .
-git commit -m "initial commit"
-# Push to cloud!
-git push origin master
-```
-
-## 3. Make updates
-Then, make the updates to the `README.md` file and add any other files necessary. `README.md` files are written in GitHub-flavored markdown, see [here](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) for a quick reference. 
-
-
-## 4. Push to GitHub
-Periodically, you will want to do a `git commit` to stash the changes locally. Then, when you are ready or need to step away, do a `git push origin master` to push the local changes to github.com. 
-
-## 5. Request to add to xM Labs
-Once you are all finished, let Travis know and he will then fork it to the xMatters account and update the necessary links in the xM Labs main page. From there if you update your repo, those changes can be merged into the xMatters account repo and everything will be kept up to date!
-
-# Template below:
----
-
-# Product Name Goes Here
-A note about what the product is and what this integration/scriptlet is all about. Check out the sweet video [here](media/mysweetvideo.mov). Be sure to indicate what type of integration or enhancement you're building! (One-way or closed-loop integration? Script library? Feature update? Enhancement to an existing integration?)
+# SignalFx
+SignalFx is an Enterprise Cloud Monitoring solution with intelligent analytics. This integration extends the alerting capabilities to include the xMatters integration and notification platform. 
 
 <kbd>
   <img src="https://github.com/xmatters/xMatters-Labs/raw/master/media/disclaimer.png">
 </kbd>
 
 # Pre-Requisites
-* Version 453 of App XYZ
-* Account in Application ABC
+* [SignalFx account](https://signalfx.com/)
 * xMatters account - If you don't have one, [get one](https://www.xmatters.com)!
 
 # Files
-* [ExampleCommPlan.zip](ExampleCommPlan.zip) - This is an example comm plan to help get started. (If it doesn't make sense to have a full communication plan, then you can just use a couple javascript files like the one below.)
-* [EmailMessageTemplate.html](EmailMessageTemplate.html) - This is an example HTML template for emails and push messages. 
-* [FileA.js](FileA.js) - An example javascript file to be pasted into a Shared Library in the Integration builder. Note the comments
+* [SignalFx.zip](SignalFx.zip) - Comm plan with the form and integration scripts
 
 # How it works
-Add some info here detailing the overall architecture and how the integration works. The more information you can add, the more helpful this sections becomes. For example: An action happens in Application XYZ which triggers the thingamajig to fire a REST API call to the xMatters inbound integration on the imported communication plan. The integration script then parses out the payload and builds an event and passes that to xMatters. 
+An alert fires a webhook to the xMatters integration builder which parses the incoming JSON and terminates any existing events matching the `incident_id` and finally, builds the payload and creates the event targeting the default recipients. Alternatively [subscriptions](http://help.xmatters.com/OnDemand/userguide/receivingalerts/subscriptions/howtousesubscriptions.htm) can be set up to notify the desired parties. From the alert, you can mute, unmute or resolve the alert in SignalFx. 
+
+The integration currently does not notify on resolved, but the integration can easily be extended to allow for this.
 
 # Installation
-Details of the installation go here. 
+
 
 ## xMatters set up
-1. Steps to create a new Shared Library or (in|out)bound integration or point them to the xMatters online help to cover specific steps; i.e., import a communication plan (link: http://help.xmatters.com/OnDemand/xmodwelcome/communicationplanbuilder/exportcommplan.htm)
-2. Add this code to some place on what page:
-   ```
-   var items = [];
-   items.push( { "stuff": "value"} );
-   console.log( 'Do stuff' );
-   ```
+1. Login to xMatters and import the [SignalFx.zip Comm Plan](SignalFx.zip). For details on importing communication plans go [here](http://help.xmatters.com/OnDemand/xmodwelcome/communicationplanbuilder/exportcommplan.htm)
+2. Navigate to the Integration Builder and expand the inbound integrations and click on the `Alert - Inbound` script. Scroll to the bottom and copy the url. Save for later. 
+3. Navigate to the `SignalFx Alerts` form and edit the layout. 
+4. Enter the recipients, or, alternatively [subscriptions](http://help.xmatters.com/OnDemand/userguide/receivingalerts/subscriptions/howtousesubscriptions.htm) can be set up to notify the desired parties.
 
 
-## Application ABC set up
-Any specific steps for setting up the target application? The more precise you can be, the better!
+## SignalFx set up
+### Outbound from SignalFx
+1. Login to SignalFx and navigate to a Dashboard that needs alerting. 
+2. Hover over the alert icon on a chart to add alerts to.
 
-Images are encouraged. Adding them is as easy as:
-```
 <kbd>
-  <img src="media/cat-tax.png" width="200" height="400">
+	<img src="media/GetAlerts.png" width="300">
 </kbd>
-```
+
+3. If there is not an existing Detector, click the New Detector from Chart and create a new Alert Rule. 
+4. Populate the Alert signal, Alert condition, settings and message as desired. 
+5. On the Alert recipients section, click Add Recipient and select `Webhook...`
 
 <kbd>
-  <img src="media/cat-tax.png" width="200" height="400">
+	<img src="media/AddRecipient.png" width="300">
+</kbd>
+
+6. Click Custom and in the Webhook Notification dialog, paste the URL copied from the inbound integration [above](#xmatters-set-up).
+7. Click Update and then Activate the Alert. 
+
+### Inbound to SignalFx
+
+1. Login to SignalFx and click the Profile in the upper right corner and click `My profile`.
+2. In the Organizations section at the bottom, click `Access Tokens`. 
+3. Expand Default and click `Show Token` and copy the token value. 
+
+<kbd>
+  <img src="media/GetToken.png" width="300">
+</kbd>
+
+4. Login to xMatters and navigate to the Developer tab > SignalFx comm plan and click Integration Builder. 
+5. Click on `Edit Constants` and select the `API Token` constant. Paste the token from above into this value. 
+
+<kbd>
+  <img src="media/PasteToken.png" width="200">
 </kbd>
 
 
 # Testing
-Be specific. What should happen to make sure this code works? What would a user expect to see? 
+Update an Alert condition or otherwise trigger something that will trip the Alert. This will fire the alert and invoke the inbound integration builder script. This script will parse the incoming payload and create an event.
+
+<kbd>
+	<img src="media/Screenshot.png" height="400">
+</kbd>
 
 # Troubleshooting
-Optional section for how to troubleshoot. Especially anything in the source application that an xMatters developer might not know about, or specific areas in xMatters to look for details - like the Activity Stream? 
+If xMatters is not sending notifications when it should be, try adding an email recipient in the Alert Recipients section and trigger the alert again. If the email is received but still nothing in xMatters, then check the Activity Stream for the `Alert - Inbound` integration script for any errors. If there are no errors, but an event is created, there will be something like this at the end
+```
+Creating new event for Signal Fx incident DLOjpF7AYmI
+> POST https://acme.xmatters.com/reapi/2015-04-01/forms/UUID/triggers HTTP/1.1
+> Accept: text/plain, application/json, application/*+json, */*
+> User-Agent: Xerus (EndpointClient)
+> X-Trace: More UUIDs
+> Content-Type: application/json; charset=UTF-8
+> Content-Length: 770
+{"properties":{"severity":"Critical","detectOnCondition":"when(A > limit_above_27)","inputs":"{\"A\":{\"value\":\"1\",\"fragment\":\"data('cpu.usage.total', extrapolation='null', maxExtrapolations=-1).count().publish(label='A', enable=False)\"},\"limit_above_27\":{\"value\":\"0.5\",\"fragment\":\"const(.5)\"}}","rule":"Alert when 1 container","description":"The value of cpu.usage.total - Count is above .5.","sf_schema":2,"eventType":"DLO5a_ZAgAA__Alert when 1 container","incidentId":"DLOjpF7AYmI","detector":"Containers Detector","detectorUrl":"URLHERE/edit?incidentId=DLOjpF7AYmI&is=anomalous","status":"anomalous","timestamp":"2017-10-03T20:58:30Z"},"recipients":[],"integrationUUID":"UUID"}
+
+< HTTP/1.1 200 OK
+< Date: Tue, 03 Oct 2017 20:58:47 GMT
+< Cache-Control: no-cache,no-store,max-age=0
+< Expires: Thu, 01 Jan 1970 00:00:00 GMT
+< Content-Type: application/json
+< X-Rate-Limit-Limit: 60
+< X-Rate-Limit-Org-Name: Mandalore
+< X-Rate-Limit-Resource: FormEventPost
+< Via: 1.1 xmatters
+< Vary: Accept-Encoding
+< Transfer-Encoding: chunked
+< X-Robots-Tag: noindex
+< X-FRAME-OPTIONS: SAMEORIGIN
+< Strict-Transport-Security: max-age=7776000; includeSubDomains; preload;
+{"id":"5118655"}
+```
+
+Of special interest is the `200 OK` and the id value at the end. 
+
+If the event is created, check the Reports tab for the active event and review the logs for notification errors. 
+
+
